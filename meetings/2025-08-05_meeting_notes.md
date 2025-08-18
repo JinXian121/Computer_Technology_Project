@@ -13,10 +13,12 @@ Use the following template for meeting notes:
 # Meeting Notes - [5 August 2025]
 
 ## Attendees
-- [ ] Member 1
-- [ ] Member 2
-- [ ] Member 3
-- [ ] Member 4
+- [ ] Alyssa
+- [ ] Aaron
+- [ ] Kim
+- [ ] Jin
+- [ ] Silas
+- [ ] Sonal
 
 ## Agenda
 1. Item 1
