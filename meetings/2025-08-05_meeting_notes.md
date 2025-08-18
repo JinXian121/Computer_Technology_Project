@@ -10,7 +10,7 @@ Please use the following format for meeting files:
 Use the following template for meeting notes:
 
 ```markdown
-# Meeting Notes - [Date]
+# Meeting Notes - [5 August 2025]
 
 ## Attendees
 - [ ] Member 1
@@ -23,12 +23,12 @@ Use the following template for meeting notes:
 2. Item 2
 
 ## Discussion
-[Meeting discussion points]
+[We were absent because our schedules conflicted。]
 
 ## Action Items
 - [ ] Action 1 - Assigned to: [Name]
 - [ ] Action 2 - Assigned to: [Name]
 
 ## Next Meeting
-Date: [Date]
-Time: [Time]
+Date: [12 Aug 2025]
+Time: [12.30pm]
