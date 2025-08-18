@@ -21,16 +21,16 @@ This checklist helps teams track their progress through the Digital Village inte
 - [x] Completed DV requirements template
 
 ### Technical Stack Discovery
-- [ ] Documented current DV tech stack
-- [ ] Identified supported programming languages
-- [ ] Understood database requirements
-- [ ] Clarified API standards and protocols
-- [ ] Reviewed authentication requirements
+- [x] Documented current DV tech stack
+- [x] Identified supported programming languages
+- [x] Understood database requirements
+- [x] Clarified API standards and protocols
+- [x] Reviewed authentication requirements
 
 ### Project Assessment
 - [ ] Completed technical compatibility assessment
 - [ ] Identified integration blockers
-- [ ] Created integration timeline
+- [x] Created integration timeline
 - [ ] Estimated resource requirements
 - [ ] Defined success criteria
 
@@ -219,5 +219,5 @@ Use this section to track any issues, blockers, or important notes during the in
 
 ---
 
-**Last Updated:** _____________________  
-**Updated By:** _____________________
+**Last Updated:** 18 Aug 2025 
+**Updated By:** Leow Jin Xian
