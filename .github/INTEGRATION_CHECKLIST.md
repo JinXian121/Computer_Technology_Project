@@ -55,7 +55,7 @@ This checklist helps teams track their progress through the Digital Village inte
 - [ ] Planned data schema alignment
 - [ ] Identified data migration needs
 - [ ] Reviewed backup and recovery procedures
-- [*] Understood data retention policies
+- [x] Understood data retention policies
 
 ## Phase 3: Security and Privacy Compliance
 
