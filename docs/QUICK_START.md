@@ -74,10 +74,10 @@ git push
 
 ## ✅ Success Checklist
 You're ready when:
-- [ ] All team members can access the repo
-- [ ] Setup script ran without errors  
-- [ ] TEAM_INFO.md has real names (no {{placeholders}})
-- [ ] You can see the GitHub Actions tab
+- [x] All team members can access the repo
+- [x] Setup script ran without errors  
+- [x] TEAM_INFO.md has real names (no {{placeholders}})
+- [x] You can see the GitHub Actions tab
 
 ---
 
