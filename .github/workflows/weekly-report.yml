@@ -1,0 +1,308 @@
+name: Weekly Report Generation
+
+# Runs every Friday at 9 AM (configurable)
+on:
+  schedule:
+    # Cron format: minute hour day month day-of-week
+    # 0 9 * * 5 = 9:00 AM every Friday
+    - cron: '0 9 * * 5'
+  workflow_dispatch:  # Allow manual trigger for testing
+
+env:
+  # Configurable environment variables
+  REPORT_TIME_ZONE: 'UTC'  # Change to your local timezone if needed
+  REPORT_WEEK_START: 'Monday'  # Week starts on Monday
+  
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full history for commit analysis
+          
+      - name: Set up date variables
+        id: dates
+        run: |
+          # Calculate week start and end dates
+          if [ "${{ env.REPORT_WEEK_START }}" = "Monday" ]; then
+            WEEK_START=$(date -d "last Monday" +%Y-%m-%d)
+          else
+            WEEK_START=$(date -d "last Sunday" +%Y-%m-%d)
+          fi
+          WEEK_END=$(date +%Y-%m-%d)
+          WEEK_NUMBER=$(date +%V)
+          
+          echo "week_start=$WEEK_START" >> $GITHUB_OUTPUT
+          echo "week_end=$WEEK_END" >> $GITHUB_OUTPUT
+          echo "week_number=$WEEK_NUMBER" >> $GITHUB_OUTPUT
+          echo "report_date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+          
+      - name: Collect commit data
+        id: commits
+        run: |
+          # Get commits from this week
+          COMMITS=$(git log --since="${{ steps.dates.outputs.week_start }}" --until="${{ steps.dates.outputs.week_end }}" --pretty=format:"- %s (%an)" --no-merges)
+          
+          # Count commits
+          COMMIT_COUNT=$(git rev-list --count --since="${{ steps.dates.outputs.week_start }}" --until="${{ steps.dates.outputs.week_end }}" HEAD)
+          
+          # Save to file for later use
+          echo "$COMMITS" > commits.txt
+          echo "count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          
+      - name: Collect issues data
+        id: issues
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const weekStart = new Date('${{ steps.dates.outputs.week_start }}');
+            const weekEnd = new Date('${{ steps.dates.outputs.week_end }}');
+            
+            // Get issues created this week
+            const createdIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              since: weekStart.toISOString(),
+            });
+            
+            // Filter issues created this week
+            const thisWeekCreated = createdIssues.data.filter(issue => 
+              new Date(issue.created_at) >= weekStart && 
+              new Date(issue.created_at) <= weekEnd &&
+              !issue.pull_request
+            );
+            
+            // Get closed issues
+            const thisWeekClosed = createdIssues.data.filter(issue =>
+              issue.closed_at &&
+              new Date(issue.closed_at) >= weekStart &&
+              new Date(issue.closed_at) <= weekEnd &&
+              !issue.pull_request
+            );
+            
+            // Save data
+            const issueData = {
+              created: thisWeekCreated.map(i => `- #${i.number}: ${i.title}`),
+              closed: thisWeekClosed.map(i => `- #${i.number}: ${i.title}`),
+              createdCount: thisWeekCreated.length,
+              closedCount: thisWeekClosed.length
+            };
+            
+            // Write to files
+            const fs = require('fs');
+            fs.writeFileSync('issues-created.txt', issueData.created.join('\n'));
+            fs.writeFileSync('issues-closed.txt', issueData.closed.join('\n'));
+            
+            core.setOutput('created_count', issueData.createdCount);
+            core.setOutput('closed_count', issueData.closedCount);
+            
+      - name: Collect PR data
+        id: prs
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const weekStart = new Date('${{ steps.dates.outputs.week_start }}');
+            const weekEnd = new Date('${{ steps.dates.outputs.week_end }}');
+            
+            // Get all PRs
+            const allPRs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+            });
+            
+            // Filter PRs created this week
+            const thisWeekCreated = allPRs.data.filter(pr => 
+              new Date(pr.created_at) >= weekStart && 
+              new Date(pr.created_at) <= weekEnd
+            );
+            
+            // Filter PRs merged this week
+            const thisWeekMerged = allPRs.data.filter(pr =>
+              pr.merged_at &&
+              new Date(pr.merged_at) >= weekStart &&
+              new Date(pr.merged_at) <= weekEnd
+            );
+            
+            // Save data
+            const prData = {
+              created: thisWeekCreated.map(pr => `- PR #${pr.number}: ${pr.title}`),
+              merged: thisWeekMerged.map(pr => `- PR #${pr.number}: ${pr.title}`),
+              createdCount: thisWeekCreated.length,
+              mergedCount: thisWeekMerged.length
+            };
+            
+            // Write to files
+            const fs = require('fs');
+            fs.writeFileSync('prs-created.txt', prData.created.join('\n'));
+            fs.writeFileSync('prs-merged.txt', prData.merged.join('\n'));
+            
+            core.setOutput('created_count', prData.createdCount);
+            core.setOutput('merged_count', prData.mergedCount);
+            
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          
+      - name: Parse meeting notes
+        id: meetings
+        run: |
+          # Check if meetings directory exists
+          if [ -d "meetings" ]; then
+            # Use the meeting parser script if it exists, otherwise fall back to simple parsing
+            if [ -f ".github/scripts/parse-meeting-notes.py" ]; then
+              # Make script executable
+              chmod +x .github/scripts/parse-meeting-notes.py
+              
+              # Run the parser
+              python .github/scripts/parse-meeting-notes.py \
+                --start-date "${{ steps.dates.outputs.week_start }}" \
+                --end-date "${{ steps.dates.outputs.week_end }}" \
+                --output-format markdown > meetings.txt
+              
+              # Extract meeting count from the output
+              MEETING_COUNT=$(grep -c "^- \*\*" meetings.txt || echo "0")
+              echo "count=$MEETING_COUNT" >> $GITHUB_OUTPUT
+            else
+              # Fallback to simple parsing
+              MEETING_FILES=$(find meetings -name "*.md" -type f -newermt "${{ steps.dates.outputs.week_start }}" ! -newermt "${{ steps.dates.outputs.week_end }} 23:59:59" 2>/dev/null || true)
+              
+              MEETING_NOTES=""
+              if [ ! -z "$MEETING_FILES" ]; then
+                for file in $MEETING_FILES; do
+                  MEETING_NOTES="$MEETING_NOTES\n- Meeting: $(basename $file .md)"
+                done
+              fi
+              
+              echo "$MEETING_NOTES" > meetings.txt
+              
+              # Count meetings
+              MEETING_COUNT=$(echo "$MEETING_FILES" | grep -c "^" || echo "0")
+              echo "count=$MEETING_COUNT" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No meetings recorded this week" > meetings.txt
+            echo "count=0" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Generate report
+        run: |
+          # Read the data files
+          COMMITS=$(cat commits.txt || echo "No commits this week")
+          ISSUES_CREATED=$(cat issues-created.txt || echo "No issues created")
+          ISSUES_CLOSED=$(cat issues-closed.txt || echo "No issues closed")
+          PRS_CREATED=$(cat prs-created.txt || echo "No PRs created")
+          PRS_MERGED=$(cat prs-merged.txt || echo "No PRs merged")
+          MEETINGS=$(cat meetings.txt || echo "No meetings recorded")
+          
+          # Determine PM name from TEAM_INFO.md or use default
+          PM_NAME="Team PM"
+          if [ -f "TEAM_INFO.md" ]; then
+            PM_LINE=$(grep -i "project manager\|pm:" TEAM_INFO.md || true)
+            if [ ! -z "$PM_LINE" ]; then
+              PM_NAME=$(echo "$PM_LINE" | sed 's/.*:\s*//')
+            fi
+          fi
+          
+          # Create the report
+          cat > "reports/week-${{ steps.dates.outputs.week_number }}-report.md" << EOF
+          # Weekly Report - Week ${{ steps.dates.outputs.week_number }}
+          **Date Range:** ${{ steps.dates.outputs.week_start }} to ${{ steps.dates.outputs.week_end }}  
+          **Submitted by:** $PM_NAME
+          
+          ## What We Completed
+          
+          ### Code Changes (${{ steps.commits.outputs.count }} commits)
+          ${COMMITS:-No commits this week}
+          
+          ### Issues Closed (${{ steps.issues.outputs.closed_count }} issues)
+          ${ISSUES_CLOSED:-No issues closed this week}
+          
+          ### PRs Merged (${{ steps.prs.outputs.merged_count }} PRs)
+          ${PRS_MERGED:-No PRs merged this week}
+          
+          ### Meetings Held (${{ steps.meetings.outputs.count }} meetings)
+          ${MEETINGS:-No meetings recorded this week}
+          
+          ## What's Next
+          <!-- Review open issues and PRs to populate this section -->
+          - [ ] Review and address open issues
+          - [ ] Complete pending pull requests
+          - [ ] Plan next week's objectives
+          
+          ## Blockers & Issues
+          <!-- No automated detection - team should update this section -->
+          - No blockers reported this week
+          
+          ## Key Decisions
+          <!-- No automated detection - team should update this section -->
+          - No key decisions recorded this week
+          
+          ---
+          *This report was automatically generated on ${{ steps.dates.outputs.report_date }}*
+          EOF
+          
+      - name: Handle no activity gracefully
+        if: steps.commits.outputs.count == '0' && steps.issues.outputs.closed_count == '0' && steps.prs.outputs.merged_count == '0'
+        run: |
+          # Update report to indicate no activity
+          cat > "reports/week-${{ steps.dates.outputs.week_number }}-report.md" << EOF
+          # Weekly Report - Week ${{ steps.dates.outputs.week_number }}
+          **Date Range:** ${{ steps.dates.outputs.week_start }} to ${{ steps.dates.outputs.week_end }}  
+          **Submitted by:** Team PM
+          
+          ## What We Completed
+          No activity recorded this week.
+          
+          ## What's Next
+          - [ ] Resume project activities
+          - [ ] Update project plan
+          
+          ## Blockers & Issues
+          - No blockers reported
+          
+          ## Key Decisions
+          - No decisions recorded
+          
+          ---
+          *This report was automatically generated on ${{ steps.dates.outputs.report_date }}*
+          EOF
+          
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "📊 Add weekly report for week ${{ steps.dates.outputs.week_number }}"
+          title: "Weekly Report - Week ${{ steps.dates.outputs.week_number }} (${{ steps.dates.outputs.week_start }} to ${{ steps.dates.outputs.week_end }})"
+          body: |
+            ## 📊 Weekly Report Generated
+            
+            This PR contains the automatically generated weekly report for week ${{ steps.dates.outputs.week_number }}.
+            
+            ### Summary:
+            - **Commits:** ${{ steps.commits.outputs.count }}
+            - **Issues Created:** ${{ steps.issues.outputs.created_count }}
+            - **Issues Closed:** ${{ steps.issues.outputs.closed_count }}
+            - **PRs Created:** ${{ steps.prs.outputs.created_count }}
+            - **PRs Merged:** ${{ steps.prs.outputs.merged_count }}
+            - **Meetings:** ${{ steps.meetings.outputs.count }}
+            
+            ### Next Steps:
+            1. Review the generated report
+            2. Update the "What's Next", "Blockers & Issues", and "Key Decisions" sections
+            3. Merge this PR to publish the report
+            
+            ---
+            *Generated by GitHub Actions on ${{ steps.dates.outputs.report_date }}*
+          branch: weekly-report-week-${{ steps.dates.outputs.week_number }}
+          delete-branch: true
+          base: main

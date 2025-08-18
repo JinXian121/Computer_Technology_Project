@@ -1,0 +1,401 @@
+name: Team Setup Automation
+
+# Triggered when repository is created from template
+on:
+  create:  # Triggered when branch or tag is created
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/team-setup.yml'
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  # Configurable environment variables
+  DEFAULT_BRANCH: 'main'
+  PROJECT_NAME: 'Team Project Board'
+  
+jobs:
+  initial-setup:
+    runs-on: ubuntu-latest
+    # Only run on first push or manual trigger
+    if: github.event_name == 'create' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.run_number == 1)
+    
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+      - name: Create initial project structure
+        run: |
+          # Create additional directories if they don't exist
+          directories=(
+            "docs/team"
+            "docs/architecture"
+            "src"
+            "tests"
+            "resources"
+            ".github/scripts"
+          )
+          
+          for dir in "${directories[@]}"; do
+            if [ ! -d "$dir" ]; then
+              mkdir -p "$dir"
+              echo "# $(basename $dir)" > "$dir/README.md"
+              echo "Created directory: $dir"
+            fi
+          done
+          
+          # Create a simple .gitignore if it doesn't exist
+          if [ ! -f ".gitignore" ]; then
+            cat > .gitignore << 'GITIGNORE'
+          # IDE files
+          .idea/
+          .vscode/
+          *.swp
+          *.swo
+          *~
+          
+          # OS files
+          .DS_Store
+          Thumbs.db
+          
+          # Dependencies
+          node_modules/
+          venv/
+          __pycache__/
+          *.pyc
+          
+          # Build outputs
+          dist/
+          build/
+          *.egg-info/
+          
+          # Environment files
+          .env
+          .env.local
+          .env.*.local
+          
+          # Logs
+          logs/
+          *.log
+          GITIGNORE
+            echo "Created .gitignore"
+          fi
+          
+          # Commit changes if any
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "🏗️ Initialize project structure"
+            git push
+          fi
+          
+      - name: Create GitHub Project Board
+        id: create-project
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Create a new project board
+            try {
+              const project = await github.rest.projects.createForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: '${{ env.PROJECT_NAME }}',
+                body: 'Automated project board for team collaboration'
+              });
+              
+              // Create default columns
+              const columns = ['To Do', 'In Progress', 'Review', 'Done'];
+              for (const columnName of columns) {
+                await github.rest.projects.createColumn({
+                  project_id: project.data.id,
+                  name: columnName
+                });
+              }
+              
+              console.log(`Created project board: ${project.data.html_url}`);
+              core.setOutput('project_url', project.data.html_url);
+              
+            } catch (error) {
+              console.log('Project board might already exist or projects are disabled');
+              console.log(error.message);
+            }
+            
+      - name: Create Welcome Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const welcomeIssue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🎉 Welcome to Your Team Repository!',
+              body: `# Welcome to Your New Team Repository! 🚀
+            
+            This repository has been automatically set up with the following features:
+            
+            ## ✅ What's Been Set Up
+            - 📁 Project structure with organized directories
+            - 📋 GitHub Project Board for task management
+            - 🛡️ Branch protection rules (pending setup)
+            - 📝 Issue templates for tasks and bugs
+            - 🔄 Weekly report automation (runs every Friday)
+            
+            ## 🏁 Getting Started
+            1. **Update TEAM_INFO.md** with your team details
+            2. **Review the project structure** in the directories
+            3. **Check the GitHub Project Board** for managing tasks
+            4. **Read the documentation** in the \`/docs\` folder
+            
+            ## 📚 Important Resources
+            - [Meeting Etiquette Guide](docs/01_Meeting_Etiquette.md)
+            - [Roles and Responsibilities](docs/02_Roles_and_Responsibilities.md)
+            - [GitHub Workflow Guide](docs/03_GitHub_Workflow.md)
+            - [Tool Stack Overview](docs/04_Tool_Stack.md)
+            - [AI Usage Guidelines](docs/05_AI_Usage_Guide.md)
+            
+            ## 🎯 Next Steps
+            See the onboarding issues created for your team to get started!
+            
+            ---
+            *This issue was automatically created by the Team Setup workflow*`,
+              labels: ['documentation', 'good first issue']
+            });
+            
+            console.log(`Created welcome issue: ${welcomeIssue.data.html_url}`);
+            
+      - name: Create Onboarding Issues
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Define onboarding tasks
+            const onboardingTasks = [
+              {
+                title: '[TASK] Update Team Information',
+                body: `## Task Description
+            Update the TEAM_INFO.md file with your team's information.
+            
+            ## Acceptance Criteria
+            - [ ] Team name is updated
+            - [ ] All team members are listed with their roles
+            - [ ] Contact information is provided
+            - [ ] Team goals are documented
+            
+            ## Resources
+            - [TEAM_INFO.md template](TEAM_INFO.md)
+            - [Example from previous teams](docs/examples/)
+            
+            ## Deadline
+            End of Week 1
+            
+            ## Assigned To
+            Project Manager`,
+                labels: ['task', 'onboarding', 'priority:high']
+              },
+              {
+                title: '[TASK] Set Up Development Environment',
+                body: `## Task Description
+            Ensure all team members have their development environment properly configured.
+            
+            ## Acceptance Criteria
+            - [ ] All team members have cloned the repository
+            - [ ] Required tools are installed (as per Tool Stack guide)
+            - [ ] Everyone can run the project locally
+            - [ ] Git is configured with proper user information
+            
+            ## Resources
+            - [Tool Stack Guide](docs/04_Tool_Stack.md)
+            - [GitHub Workflow Guide](docs/03_GitHub_Workflow.md)
+            
+            ## Deadline
+            End of Week 1
+            
+            ## Assigned To
+            Tech Lead`,
+                labels: ['task', 'onboarding', 'technical']
+              },
+              {
+                title: '[TASK] Schedule First Team Meeting',
+                body: `## Task Description
+            Organize and conduct the first team meeting to establish working agreements.
+            
+            ## Acceptance Criteria
+            - [ ] Meeting time agreed upon by all team members
+            - [ ] Agenda created and shared
+            - [ ] Meeting notes documented in /meetings folder
+            - [ ] Action items assigned and tracked
+            
+            ## Resources
+            - [Meeting Etiquette Guide](docs/01_Meeting_Etiquette.md)
+            - [Meeting template](meetings/README.md)
+            
+            ## Deadline
+            Within 3 days
+            
+            ## Assigned To
+            Project Manager`,
+                labels: ['task', 'onboarding', 'meeting']
+              },
+              {
+                title: '[TASK] Review Project Requirements',
+                body: `## Task Description
+            As a team, review and understand the project requirements and scope.
+            
+            ## Acceptance Criteria
+            - [ ] All team members have read the project brief
+            - [ ] Questions about requirements are documented
+            - [ ] Initial project plan is drafted
+            - [ ] Milestones are identified
+            
+            ## Resources
+            - Project brief (check repository root or docs)
+            - [Project README](project/README.md)
+            
+            ## Deadline
+            End of Week 1
+            
+            ## Assigned To
+            All Team Members`,
+                labels: ['task', 'onboarding', 'planning']
+              },
+              {
+                title: '[TASK] Establish Team Communication Channels',
+                body: `## Task Description
+            Set up and agree on team communication methods and protocols.
+            
+            ## Acceptance Criteria
+            - [ ] Primary communication channel chosen (Slack, Discord, etc.)
+            - [ ] All team members added to communication channels
+            - [ ] Communication guidelines established
+            - [ ] Response time expectations set
+            
+            ## Resources
+            - [Roles and Responsibilities](docs/02_Roles_and_Responsibilities.md)
+            
+            ## Deadline
+            Within 2 days
+            
+            ## Assigned To
+            Project Manager`,
+                labels: ['task', 'onboarding', 'communication']
+              }
+            ];
+            
+            // Create each onboarding issue
+            for (const task of onboardingTasks) {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: task.title,
+                body: task.body,
+                labels: task.labels
+              });
+              
+              console.log(`Created onboarding issue: ${issue.data.title}`);
+            }
+            
+      - name: Set up branch protection rules
+        uses: actions/github-script@v6
+        continue-on-error: true  # Continue if this fails (requires admin permissions)
+        with:
+          script: |
+            try {
+              // Set up branch protection for main branch
+              await github.rest.repos.updateBranchProtection({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                branch: '${{ env.DEFAULT_BRANCH }}',
+                required_status_checks: {
+                  strict: true,
+                  contexts: []
+                },
+                enforce_admins: false,
+                required_pull_request_reviews: {
+                  required_approving_review_count: 1,
+                  dismiss_stale_reviews: true
+                },
+                restrictions: null,
+                allow_force_pushes: false,
+                allow_deletions: false
+              });
+              
+              console.log('Branch protection rules set up successfully');
+              
+            } catch (error) {
+              console.log('Could not set up branch protection rules. This requires admin permissions.');
+              console.log('Please set up branch protection manually:');
+              console.log('1. Go to Settings → Branches');
+              console.log('2. Add rule for "main" branch');
+              console.log('3. Enable "Require pull request reviews"');
+              console.log('4. Enable "Dismiss stale pull request approvals"');
+              console.log('Error:', error.message);
+            }
+            
+      - name: Create setup completion issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const projectUrl = '${{ steps.create-project.outputs.project_url }}' || 'Check Projects tab';
+            
+            const completionIssue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '✅ Repository Setup Complete',
+              body: `# Repository Setup Summary
+            
+            The automated setup process has completed! Here's what was done:
+            
+            ## 📋 Setup Actions Completed
+            
+            ### 1. Project Structure ✅
+            The following directories have been created:
+            - \`docs/team\` - Team documentation
+            - \`docs/architecture\` - Architecture decisions and diagrams
+            - \`src\` - Source code
+            - \`tests\` - Test files
+            - \`resources\` - Additional resources
+            - \`.github/scripts\` - GitHub Actions scripts
+            
+            ### 2. GitHub Project Board 📊
+            Project board created: ${projectUrl}
+            With columns: To Do, In Progress, Review, Done
+            
+            ### 3. Onboarding Issues 📝
+            The following onboarding tasks have been created:
+            - Update Team Information
+            - Set Up Development Environment
+            - Schedule First Team Meeting
+            - Review Project Requirements
+            - Establish Team Communication Channels
+            
+            ### 4. Branch Protection 🛡️
+            Branch protection rules have been configured (or need manual setup if permissions were insufficient).
+            
+            ## ⚠️ Required Manual Steps
+            
+            1. **Update TEAM_INFO.md** with your actual team information
+            2. **Review and assign** the created onboarding issues to team members
+            3. **Configure branch protection** if the automated setup failed (check Settings → Branches)
+            4. **Set up your communication channels** as per the onboarding tasks
+            
+            ## 📅 Weekly Reports
+            Weekly reports will be automatically generated every Friday at 9 AM. You can also trigger them manually from the Actions tab.
+            
+            ## 🚀 Ready to Start!
+            Your repository is now set up and ready for your team to begin work. Check the onboarding issues to get started!
+            
+            ---
+            *This setup was completed on ${new Date().toISOString()}*`,
+              labels: ['documentation', 'setup-complete'],
+              assignees: []
+            });
+            
+            console.log(`Created completion issue: ${completionIssue.data.html_url}`);

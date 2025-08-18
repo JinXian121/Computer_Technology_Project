@@ -1,0 +1,108 @@
+# GitHub Labels Configuration
+# This file defines standard labels for issues and pull requests
+# Use with GitHub Actions or label sync tools to maintain consistency
+
+# Priority Labels
+- name: "priority: critical"
+  color: "b60205"
+  description: "Critical priority - needs immediate attention"
+
+- name: "priority: high"
+  color: "d93f0b"
+  description: "High priority - important and urgent"
+
+- name: "priority: medium"
+  color: "fbca04"
+  description: "Medium priority - important but not urgent"
+
+- name: "priority: low"
+  color: "0e8a16"
+  description: "Low priority - nice to have"
+
+# Type Labels
+- name: "type: feature"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "type: bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "type: research"
+  color: "7057ff"
+  description: "Research and investigation tasks"
+
+- name: "type: documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+# Status Labels
+- name: "status: blocked"
+  color: "e11d21"
+  description: "Progress is blocked by external factors"
+
+- name: "status: in-progress"
+  color: "1d76db"
+  description: "Work is actively being done"
+
+- name: "status: review"
+  color: "0366d6"
+  description: "Ready for review or in review"
+
+- name: "status: done"
+  color: "0e8a16"
+  description: "Task is completed"
+
+# Team Labels
+- name: "team: frontend"
+  color: "c2e0c6"
+  description: "Frontend team responsibility"
+
+- name: "team: backend"
+  color: "fef2c0"
+  description: "Backend team responsibility"
+
+- name: "team: design"
+  color: "d4c5f9"
+  description: "Design team responsibility"
+
+- name: "team: all"
+  color: "bfdadc"
+  description: "Involves all team members"
+
+# Additional Useful Labels
+- name: "meeting"
+  color: "f9d0c4"
+  description: "Meeting notes and outcomes"
+
+- name: "weekly-goal"
+  color: "c5def5"
+  description: "Weekly objectives and goals"
+
+- name: "planning"
+  color: "006b75"
+  description: "Planning and strategy"
+
+- name: "task"
+  color: "128A0C"
+  description: "General task to be completed"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "wontfix"
+  color: "ffffff"
+  description: "This will not be worked on"
+
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "This issue or pull request already exists"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
