@@ -1,9 +1,9 @@
 # {{TEAM_NAME}} Project Repository
 
 ## Team Information
-- **Team Name**: {{TEAM_NAME}}
-- **Project**: {{PROJECT_NAME}}
-- **Semester**: {{SEMESTER}}
+- **Team Name**: {{For Lucky}}
+- **Project**: {{Project 76 AI Innovation Observatory: Mapping the Future of Enterprise AI}}
+- **Semester**: {{SEMESTER 2}}
 
 ## 🚀 Getting Started
 - **New to the team?** Start with our [5-minute Quick Start Guide](docs/QUICK_START.md)
