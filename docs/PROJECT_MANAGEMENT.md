@@ -28,12 +28,12 @@ All tools are integrated, creating a seamless workflow from idea to implementati
 
 ### 1. Initial Setup Checklist
 
-- [ ] All team members have repository access
-- [ ] Project board created (see [PROJECT_TEMPLATE.md](../.github/PROJECT_TEMPLATE.md))
-- [ ] Labels configured (see [labels.yml](../.github/labels.yml))
-- [ ] First milestone created
-- [ ] Team roles assigned
-- [ ] Weekly meeting schedule set
+- [x] All team members have repository access
+- [x] Project board created (see [PROJECT_TEMPLATE.md](../.github/PROJECT_TEMPLATE.md))
+- [x] Labels configured (see [labels.yml](../.github/labels.yml))
+- [x] First milestone created
+- [x] Team roles assigned
+- [x] Weekly meeting schedule set
 
 ### 2. Understanding the Tools
 
