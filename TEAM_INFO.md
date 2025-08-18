@@ -15,7 +15,7 @@
 | {{Sonal Chemitha}} | @{{MEMBER_4_GITHUB}} | {{Technical Solutions}} | {{104351799@student.swin.edu.au}} |
 
 ## Communication
-- **Stand-ups:** {{Hold team meetings when needed}}
+- **Stand-ups:** {{Tuesday, 12:30 p.m.}}
 - **Primary Channel:** {{Discord}
 
 ## Quick Links
