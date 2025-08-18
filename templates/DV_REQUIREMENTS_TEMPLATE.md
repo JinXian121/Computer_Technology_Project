@@ -11,10 +11,10 @@ This template helps your team gather essential information about Digital Village
 ## Team Information
 
 **Team Name:** _____________________  
-**Project Name:** _____________________  
-**Primary Contact:** _____________________  
-**Date Completed:** _____________________  
-**DV Contact:** _____________________  
+**Project Name:** Project 76 AI Innovation Observatory: Mapping the Future of Enterprise AI   
+**Primary Contact:** 103073209@student.swin.edu.au
+**Date Completed:** 11 November 2025   
+**DV Contact:** ed.coghlan@digitalvillage.au
 
 ---
 
@@ -23,8 +23,8 @@ This template helps your team gather essential information about Digital Village
 ### Programming Languages
 **What programming languages does DV currently use?**
 - [ ] JavaScript/TypeScript
-- [ ] Python
-- [ ] Java
+- [x] Python
+- [x] Java
 - [ ] C#/.NET
 - [ ] Go
 - [ ] Ruby
@@ -65,7 +65,7 @@ This template helps your team gather essential information about Digital Village
 ### Primary Database
 **What database system(s) does DV use?**
 - [ ] PostgreSQL
-- [ ] MySQL/MariaDB
+- [x] MySQL/MariaDB
 - [ ] MongoDB
 - [ ] Redis
 - [ ] Elasticsearch
@@ -84,7 +84,7 @@ This template helps your team gather essential information about Digital Village
 ### Data Access Patterns
 **How should our application access data?**
 - [ ] Direct database access
-- [ ] Through DV API only
+- [x] Through DV API only
 - [ ] Hybrid approach
 - [ ] Other: _____________________
 
@@ -134,7 +134,7 @@ This template helps your team gather essential information about Digital Village
 - [ ] GraphQL
 - [ ] gRPC
 - [ ] SOAP
-- [ ] WebSockets
+- [x] WebSockets
 - [ ] Other: _____________________
 
 ### API Versioning
@@ -142,12 +142,12 @@ This template helps your team gather essential information about Digital Village
 - [ ] URL path versioning (e.g., /v1/users)
 - [ ] Header versioning
 - [ ] Query parameter versioning
-- [ ] No versioning
+- [x] No versioning
 - [ ] Other: _____________________
 
 ### Data Formats
 **What data formats are required?**
-- [ ] JSON
+- [x] JSON
 - [ ] XML
 - [ ] Protocol Buffers
 - [ ] MessagePack
@@ -155,7 +155,7 @@ This template helps your team gather essential information about Digital Village
 
 ### API Documentation
 **What documentation standard is used?**
-- [ ] OpenAPI/Swagger
+- [x] OpenAPI/Swagger
 - [ ] API Blueprint
 - [ ] RAML
 - [ ] GraphQL Schema
@@ -246,7 +246,7 @@ This template helps your team gather essential information about Digital Village
 
 ### Environments Available
 **What environments can we use?**
-- [ ] Development
+- [x] Development
 - [ ] Staging/UAT
 - [ ] Production
 - [ ] Other: _____________________
@@ -257,7 +257,7 @@ This template helps your team gather essential information about Digital Village
 **What CI/CD tools are used?**
 - [ ] Jenkins
 - [ ] GitLab CI
-- [ ] GitHub Actions
+- [x] GitHub Actions
 - [ ] Azure DevOps
 - [ ] CircleCI
 - [ ] Other: _____________________
