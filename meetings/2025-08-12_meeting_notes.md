@@ -14,23 +14,23 @@ Use the following template for meeting notes:
 
 ## Attendees
 - [ ] Alyssa
-- [ ] Aaron
-- [ ] Kim
-- [ ] Jin
-- [ ] Silas
-- [ ] Sonal
+- [x] Aaron
+- [x] Kim
+- [x] Jin
+- [x] Silas
+- [x] Sonal
 
 ## Agenda
-1. Item 1
-2. Item 2
+1. Discuss GitHub setup to document each step
+2. Ask about any problems we face
 
 ## Discussion
-[We were absent because our schedules conflicted。]
+[The client taught us how to set up Github to record each step and we ask our clients the problems we face]
 
 ## Action Items
-- [ ] Action 1 - Assigned to: [Name]
-- [ ] Action 2 - Assigned to: [Name]
+- [x] Action 1 - Assigned to: [Ed]
+- [x] Action 2 - Assigned to: [Aaron]
 
 ## Next Meeting
-Date: [12 Aug 2025]
+Date: [19 Aug 2025]
 Time: [12.30pm]
