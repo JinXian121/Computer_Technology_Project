@@ -4,8 +4,8 @@ Welcome to your team project! This interactive checklist will guide you through 
 
 ## 📊 Progress Tracker
 Track your overall progress here:
-- [ ] Pre-Course Setup Complete
-- [ ] Week 1 Tasks Complete  
+- [x] Pre-Course Setup Complete
+- [x] Week 1 Tasks Complete  
 - [ ] Week 2 Tasks Complete
 - [ ] Ongoing Processes Established
 - [ ] Integration Ready
@@ -17,36 +17,36 @@ Track your overall progress here:
 **Goal:** Be ready to hit the ground running on Day 1
 
 ### GitHub Account & Access
-- [ ] Create GitHub account (if needed) - [Sign up here](https://github.com/signup)
-- [ ] Set up 2FA for security - [GitHub 2FA Guide](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa)
+- [x] Create GitHub account (if needed) - [Sign up here](https://github.com/signup)
+- [x] Set up 2FA for security - [GitHub 2FA Guide](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa)
 - [ ] Add profile picture and bio
-- [ ] Join course organization (check course email for invite)
-- [ ] Accept repository access invitation
+- [x] Join course organization (check course email for invite)
+- [x] Accept repository access invitation
 
 **✅ Success Indicator:** You can access the course organization and see other repositories
 
 ### Development Environment
-- [ ] Install Git - [Download Git](https://git-scm.com/downloads)
+- [x] Install Git - [Download Git](https://git-scm.com/downloads)
   ```bash
   # Verify installation
   git --version
   ```
-- [ ] Configure Git with your info:
+- [x] Configure Git with your info:
   ```bash
   git config --global user.name "Your Name"
   git config --global user.email "your.email@student.edu"
   ```
-- [ ] Install VS Code - [Download VS Code](https://code.visualstudio.com/)
-- [ ] Install VS Code GitHub extension
-- [ ] Set up VS Code command line tools
+- [x] Install VS Code - [Download VS Code](https://code.visualstudio.com/)
+- [x] Install VS Code GitHub extension
+- [x] Set up VS Code command line tools
 
 **✅ Success Indicator:** Running `git --version` and `code --version` both work
 
 ### Optional but Recommended
-- [ ] Install GitHub Desktop (if you prefer GUI) - [Download](https://desktop.github.com/)
+- [x] Install GitHub Desktop (if you prefer GUI) - [Download](https://desktop.github.com/)
 - [ ] Set up SSH keys for GitHub - [SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
 - [ ] Install Node.js/npm (if using JavaScript) - [Download Node.js](https://nodejs.org/)
-- [ ] Install Python (if using Python) - [Download Python](https://www.python.org/)
+- [x] Install Python (if using Python) - [Download Python](https://www.python.org/)
 
 **🔧 Troubleshooting:**
 - **Git not recognized?** Make sure Git is in your PATH
@@ -60,10 +60,10 @@ Track your overall progress here:
 **Goal:** Establish your team and basic workflows
 
 ### Day 1-2: Repository Setup (30 mins)
-- [ ] Click "Use this template" to create your team repository
-- [ ] Name it according to course guidelines: `TeamName-ProjectName`
-- [ ] Make repository private (if required by course)
-- [ ] Add all team members as collaborators
+- [x] Click "Use this template" to create your team repository
+- [x] Name it according to course guidelines: `TeamName-ProjectName`
+- [x] Make repository private (if required by course)
+- [x] Add all team members as collaborators
   - Go to Settings → Manage access → Add people
 
 **✅ Success Indicator:** All team members can clone and push to the repository
@@ -91,14 +91,14 @@ Track your overall progress here:
 **✅ Success Indicator:** Setup script completes without errors
 
 ### Day 3-4: Team Information (45 mins)
-- [ ] Update `TEAM_INFO.md` with real information:
-  - [ ] Team name decided and updated
-  - [ ] All member names and GitHub handles
-  - [ ] Roles assigned (PM, Tech Lead, etc.)
-  - [ ] Contact emails added
-  - [ ] Meeting schedule determined
-- [ ] Create team communication channel (Slack/Discord/Teams)
-- [ ] Commit and push changes:
+- [x] Update `TEAM_INFO.md` with real information:
+  - [x] Team name decided and updated
+  - [x] All member names and GitHub handles
+  - [x] Roles assigned (PM, Tech Lead, etc.)
+  - [x] Contact emails added
+  - [x] Meeting schedule determined
+- [x] Create team communication channel (Slack/Discord/Teams)
+- [x] Commit and push changes:
   ```bash
   git add TEAM_INFO.md
   git commit -m "Update team information"
@@ -108,24 +108,24 @@ Track your overall progress here:
 **✅ Success Indicator:** TEAM_INFO.md has no more {{PLACEHOLDER}} values
 
 ### Day 4-5: First Team Meeting (1-2 hours)
-- [ ] Schedule meeting (use when2meet or similar)
-- [ ] Create meeting agenda in `meetings/week01-kickoff.md`
-- [ ] Hold meeting covering:
-  - [ ] Introductions and icebreaker
-  - [ ] Review project requirements together
-  - [ ] Discuss individual strengths/interests
-  - [ ] Agree on communication norms
-  - [ ] Set regular meeting times
-- [ ] Document meeting notes
-- [ ] Create action items as GitHub issues
+- [x] Schedule meeting (use when2meet or similar)
+- [x] Create meeting agenda in `meetings/week01-kickoff.md`
+- [x] Hold meeting covering:
+  - [x] Introductions and icebreaker
+  - [x] Review project requirements together
+  - [x] Discuss individual strengths/interests
+  - [x] Agree on communication norms
+  - [x] Set regular meeting times
+- [x] Document meeting notes
+- [x] Create action items as GitHub issues
 
 **✅ Success Indicator:** All team members attended and meeting notes are in repository
 
 ### End of Week 1: Automation Check
-- [ ] Verify GitHub Actions are enabled (Settings → Actions)
-- [ ] Check that team-setup workflow ran successfully
-- [ ] Review automatically created onboarding issues
-- [ ] Assign onboarding issues to team members
+- [x] Verify GitHub Actions are enabled (Settings → Actions)
+- [x] Check that team-setup workflow ran successfully
+- [x] Review automatically created onboarding issues
+- [x] Assign onboarding issues to team members
 
 **🔧 Troubleshooting:**
 - **Can't push to repository?** Check you're added as collaborator
