@@ -5,9 +5,9 @@
 This checklist helps teams track their progress through the Digital Village integration process. Use this as a working document throughout your integration journey.
 
 **Team Name:** _____________________  
-**Project Name:** _____________________  
-**Integration Start Date:** _____________________  
-**Target Completion Date:** _____________________  
+**Project Name:** Project 76 AI Innovation Observatory: Mapping the Future of Enterprise AI  
+**Integration Start Date:** 3 Marh 2025 
+**Target Completion Date:** 11 November 2025 
 
 ---
 
