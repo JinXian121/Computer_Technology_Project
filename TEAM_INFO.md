@@ -11,7 +11,7 @@
 | {{Aaron Zheng Xun Goh}} | @{{AaronG0h}} | {{Project Scope}} | {{104791748@student.swin.edu.au}} |
 | {{Kim Thu Tran}} | @{{MEMBER_3_GITHUB}} | {{Technical Solutions}} | {{104061810@student.swin.edu.au}} |
 | {{Leow Jin Xian}} | @{{JinXian121}} | {{Quality Plan}} | {{104772992@student.swin.edu.au}} |
-| {{Silas Stephen Ng Ai Peng}} | @{{MEMBER_3_GITHUB}} | {{Document Management}} | {{101235599@student.swin.edu.au}} |
+| {{Silas Stephen Ng Ai Peng}} | @{{SilasNg}} | {{Document Management}} | {{101235599@student.swin.edu.au}} |
 | {{Sonal Chemitha}} | @{{MEMBER_4_GITHUB}} | {{Technical Solutions}} | {{104351799@student.swin.edu.au}} |
 
 ## Communication
